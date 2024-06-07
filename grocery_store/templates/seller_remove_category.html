@@ -1,0 +1,26 @@
+{% extends 'seller_main_page.html' %}
+
+{% block title %}Remove Category{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Remove Category</h3>
+    <hr>
+    <form class="row g-3">
+        <div class="col-12">
+            <label for="categoryId" class="form-label">Category ID</label>
+            <input type="text" class="form-control" id="categoryId" placeholder="Category ID">
+        </div>
+        <div class="col-12">
+            <label for="categoryName" class="form-label">Name of the Category</label>
+            <input type="text" class="form-control" id="categoryName" placeholder="Category Name">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-danger">Remove</button>
+        </div>
+    </form>
+    <div class="go-back">
+        <a href="#">Go Back</a>
+    </div>
+</div>
+{% endblock %}

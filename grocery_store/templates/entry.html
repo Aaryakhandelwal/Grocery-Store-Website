@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Store Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333; /* changed to dark background */
+        }
+       .container {
+            max-width: 400px;
+            margin: 40px auto;
+            background-color: #444; /* changed to dark background */
+            padding: 20px;
+            border: 1px solid #555; /* changed to dark border */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* changed to darker shadow */
+            text-align: center;
+            color: #fff; /* changed to white text */
+        }
+        h3 {
+            margin-top: 0;
+            color: #fff; /* changed to white text */
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            background-color: #337ab7; /* kept the same blue color */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #23527c; /* kept the same hover color */
+        }
+        .go-back {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .go-back a {
+            text-decoration: none;
+            color: #337ab7; /* kept the same blue color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Online Store Home</h3>
+        <hr>
+        <h3>Please choose your role:</h3>
+        <div class="buttons">
+            <button type="button" onclick="window.location.href='{% url 'login_register' %}?role=admin'">Enter as Admin</button>
+            <button type="button" onclick="window.location.href='{% url 'login_register' %}?role=user'">Enter as User</button>
+            <button type="button" onclick="window.location.href='{% url 'login_register' %}?role=seller'">Enter as Seller/Vendor</button>
+        </div>
+        
+        
+    </div>
+</body>
+</html>
