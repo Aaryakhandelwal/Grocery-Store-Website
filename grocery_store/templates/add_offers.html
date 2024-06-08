@@ -1,0 +1,33 @@
+{% extends 'admin_main_page.html' %}
+
+{% block title %}Add Offer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class="text-center">Enter Offer Details</h3>
+    <hr>
+    <form method="post" action="{% url 'add_offers' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="promoCode" class="form-label">Promo Code</label>
+            <input type="text" class="form-control" id="promoCode" name="promo_code" placeholder="Promo Code" required>
+        </div>
+        <div class="mb-3">
+            <label for="discountPercentage" class="form-label">Percentage Discount</label>
+            <input type="text" class="form-control" id="discountPercentage" name="discount_percentage" placeholder="Percentage Discount" required>
+        </div>
+        <div class="mb-3">
+            <label for="minOrderValue" class="form-label">Min Order Value</label>
+            <input type="text" class="form-control" id="minOrderValue" name="min_order_value" placeholder="Min Order Value" required>
+        </div>
+        <div class="mb-3">
+            <label for="maxDiscount" class="form-label">Maximum Discount</label>
+            <input type="text" class="form-control" id="maxDiscount" name="max_discount" placeholder="Maximum Discount" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div class="go-back mt-3">
+        <a href="{% url 'entry' %}" class="btn btn-secondary">Go Back</a>
+    </div>
+</div>
+{% endblock %}

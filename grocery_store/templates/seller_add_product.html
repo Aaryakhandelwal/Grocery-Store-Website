@@ -1,0 +1,43 @@
+{% extends 'seller_main_page.html' %}
+
+{% block title %}Enter Product Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Enter Product Details</h3>
+    <hr>
+    <form class="row g-3">
+        <div class="col-12">
+            <label for="productName" class="form-label">Name of the item</label>
+            <input type="text" class="form-control" id="productName" placeholder="Item Name">
+        </div>
+        <div class="col-12">
+            <label for="productAvailability" class="form-label">Availability</label>
+            <input type="number" class="form-control" id="productAvailability" placeholder="Availability">
+        </div>
+        <div class="col-12">
+            <label for="productDescription" class="form-label">Description</label>
+            <input type="text" class="form-control" id="productDescription" placeholder="Description">
+        </div>
+        <div class="col-12">
+            <label for="productPrice" class="form-label">Price</label>
+            <input type="text" class="form-control" id="productPrice" placeholder="Price">
+        </div>
+        <div class="col-12">
+            <label for="productCategory" class="form-label">Category</label>
+            <select id="productCategory" class="form-select">
+                <option selected>Choose...</option>
+                <option>Category 1</option>
+                <option>Category 2</option>
+                <option>Category 3</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Enter</button>
+        </div>
+    </form>
+    <div class="go-back">
+        <a href="#">Go Back</a>
+    </div>
+</div>
+{% endblock %}
