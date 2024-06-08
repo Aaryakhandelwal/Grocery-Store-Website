@@ -24,5 +24,5 @@ urlpatterns = [
     path('seller_remove_product', views.seller_remove_product, name ='seller_remove_product'),
     path('user_scroll_page', views.user_scroll_page, name ='user_scroll_page'),
     path('user_cart', views.user_cart, name ='user_cart'),
-    path('user_checkout', views.user_checkout, name ='user_checkout')
+    path('user_checkout', views.user_checkout, name ='user_checkout'),
 ]
