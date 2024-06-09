@@ -1,0 +1,31 @@
+{% extends 'admin_main_page.html' %}
+
+{% block title %}View Products{% endblock %}
+
+{% block content %}
+  <h1 class="text-center">View Products</h1>
+  <table class="table table-striped table-custom">
+    <thead>
+      <tr>
+        <th scope="col">Product ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in item %}
+      <tr>
+        <td>{{ product.ProductID }}</td>
+        <td>{{ product.Name_of_the_item }}</td>
+        <td>{{ product.Quantity }}</td>
+        <td>{{ product.Description }}</td>
+        <td>${{ product.Price }}</td>
+        <td>{{ product.CategoryID }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

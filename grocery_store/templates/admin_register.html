@@ -20,6 +20,25 @@
             text-align: center;
             color: #fff; /* changed to white text */
         }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+    
+        .alert-error {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
         h3 {
             margin-top: 0;
             color: #fff; /* changed to white text */
@@ -69,17 +88,32 @@
         <h3>Online Store Home</h3>
         <hr>
         <h3>Admin Registration</h3>
+        
+
         <form method="post" action="{% url 'admin_register' %}">
             {% csrf_token %}
             <label for="admin_name">Name</label>
             <input type="text" name="admin_name" id="admin_name" placeholder="Name" required>
             <label for="password">Password</label>
             <input type="password" name="password" id="password" placeholder="Password" required>
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
+            {% endif %}
             <button type="submit">Register Now</button>
         </form>
         <div class="go-back">
             <a href="{% url 'entry' %}">Go Back</a>
         </div>
     </div>
+
+    
+    
 </body>
 </html>

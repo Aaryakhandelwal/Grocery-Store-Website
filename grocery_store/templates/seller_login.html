@@ -28,8 +28,8 @@
             display: block;
             margin-bottom: 5px;
         }
-        input[type="email"],
-        input[type="password"] {
+        input[type="text"],
+        input[type="tel"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -63,21 +63,32 @@
     <div class="container">
         <h3>Enter Seller/Vendor Details</h3>
         <hr>
-        <form class="row g-3">
+        <form class="row g-3" method="post" action="{% url 'seller_login' %}">
+            {% csrf_token %}
             <div class="col-12">
-                <label for="inputEmail4" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                <label for="inputName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="inputName" name="name" placeholder="Full Name" required>
             </div>
             <div class="col-12">
-                <label for="inputPassword4" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                <label for="inputPhone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="inputPhone" name="phone" placeholder="Phone Number" required>
             </div>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
+            {% endif %}
             <div class="col-12">
-                <button type="submit" class="btn btn-primary" onclick="window.location.href='{% url 'seller_add_product' %}'">Enter</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </div>
         </form>
         <div class="go-back">
-            <a href="{%url 'entry'%}">Go Back</a>
+            <a href="{% url 'entry' %}">Go Back</a>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

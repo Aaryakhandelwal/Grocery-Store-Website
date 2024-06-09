@@ -20,11 +20,17 @@
             <label for="minOrderValue" class="form-label">Min Order Value</label>
             <input type="text" class="form-control" id="minOrderValue" name="min_order_value" placeholder="Min Order Value" required>
         </div>
-        <div class="mb-3">
-            <label for="maxDiscount" class="form-label">Maximum Discount</label>
-            <input type="text" class="form-control" id="maxDiscount" name="max_discount" placeholder="Maximum Discount" required>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        {% if success %}
+        <div class="alert alert-success" role="alert">
+            {{ success }}
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
     <div class="go-back mt-3">
         <a href="{% url 'entry' %}" class="btn btn-secondary">Go Back</a>

@@ -1,43 +1,38 @@
 {% extends 'seller_main_page.html' %}
 
-{% block title %}Enter Product Details{% endblock %}
+{% block title %}Add Product{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h3>Enter Product Details</h3>
+    <h3>Online Store Home</h3>
     <hr>
-    <form class="row g-3">
-        <div class="col-12">
-            <label for="productName" class="form-label">Name of the item</label>
-            <input type="text" class="form-control" id="productName" placeholder="Item Name">
-        </div>
-        <div class="col-12">
-            <label for="productAvailability" class="form-label">Availability</label>
-            <input type="number" class="form-control" id="productAvailability" placeholder="Availability">
-        </div>
-        <div class="col-12">
-            <label for="productDescription" class="form-label">Description</label>
-            <input type="text" class="form-control" id="productDescription" placeholder="Description">
-        </div>
-        <div class="col-12">
-            <label for="productPrice" class="form-label">Price</label>
-            <input type="text" class="form-control" id="productPrice" placeholder="Price">
-        </div>
-        <div class="col-12">
-            <label for="productCategory" class="form-label">Category</label>
-            <select id="productCategory" class="form-select">
-                <option selected>Choose...</option>
-                <option>Category 1</option>
-                <option>Category 2</option>
-                <option>Category 3</option>
-            </select>
-        </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Enter</button>
-        </div>
+    <h3>Add Product</h3>
+    <form method="post" action="{% url 'seller_add_product' %}">
+        {% csrf_token %}
+        <label for="inputName">Name</label>
+        <input type="text" class="form-control" id="inputName" name="name" placeholder="Name" required>
+        <label for="inputDescription">Description</label>
+        <input type="text" class="form-control" id="inputDescription" name="description" placeholder="Description" required>
+        <label for="inputCategory">Category</label>
+        <input type="text" class="form-control" id="inputCategory" name="category" placeholder="Category" required>
+        <label for="inputPrice">Price</label>
+        <input type="text" class="form-control" id="inputPrice" name="price" placeholder="Price" required>
+        <label for="inputQuantity">Quantity</label>
+        <input type="text" class="form-control" id="inputQuantity" name="quantity" placeholder="Quantity" required>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <div class="go-back">
-        <a href="#">Go Back</a>
+        <a href="#" class="btn btn-secondary">Go Back</a>
     </div>
 </div>
 {% endblock %}

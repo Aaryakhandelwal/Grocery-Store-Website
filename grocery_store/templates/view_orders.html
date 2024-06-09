@@ -17,15 +17,17 @@
       </tr>
     </thead>
     <tbody>
+      {% for order in orders %}
       <tr>
-        <td>123</td>
-        <td>456</td>
-        <td>2</td>
-        <td>$20.50</td>
-        <td>2024-06-07 10:00:00</td>
-        <td>Credit Card</td>
-        <td>1</td>
+        <td>{{ order.OrderID }}</td>
+        <td>{{ order.ItemID }}</td>
+        <td>{{ order.Quantity }}</td>
+        <td>${{ order.price }}</td>
+        <td>{{ order.OrderDate }}</td>
+        <td>{{ order.Mode_of_payment }}</td>
+        <td>{{ order.CustomerID }}</td>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
 {% endblock %}

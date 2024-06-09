@@ -6,21 +6,53 @@
 <div class="container">
     <h3>Remove Category</h3>
     <hr>
-    <form class="row g-3">
+    
+    <h4>Available Categories</h4>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.CategoryID }}</td>
+                <td>{{ category.Category_Name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form class="row g-3" method="post" action="{% url 'seller_remove_category' %}">
+        {% csrf_token %}
         <div class="col-12">
             <label for="categoryId" class="form-label">Category ID</label>
-            <input type="text" class="form-control" id="categoryId" placeholder="Category ID">
+            <input type="text" class="form-control" id="categoryId" name="categoryId" placeholder="Category ID" required>
         </div>
         <div class="col-12">
             <label for="categoryName" class="form-label">Name of the Category</label>
-            <input type="text" class="form-control" id="categoryName" placeholder="Category Name">
+            <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Category Name" required>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-danger">Remove</button>
         </div>
     </form>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+    {% if success %}
+        <div class="alert alert-success" role="alert">
+            {{ success }}
+        </div>
+    {% endif %}
+    
     <div class="go-back">
-        <a href="#">Go Back</a>
+        <a href="{% url 'seller_main_page' %}" class="btn btn-secondary">Go Back</a>
     </div>
 </div>
 {% endblock %}

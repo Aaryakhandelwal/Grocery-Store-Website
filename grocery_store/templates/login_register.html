@@ -14,8 +14,6 @@
                 targetUrl = action === 'login' ? '{% url "admin_login" %}' : '{% url "admin_register" %}';
             } else if (role === 'user') {
                 targetUrl = action === 'login' ? '{% url "user_login" %}' : '{% url "user_register" %}';
-            } else if (role === 'seller') {
-                targetUrl = action === 'login' ? '{% url "seller_login" %}' : '{% url "seller_register" %}';
             } else {
                 alert('Invalid role selected.');
                 return;

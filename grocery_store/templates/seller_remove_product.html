@@ -6,18 +6,42 @@
 <div class="container">
     <h3>Remove Product</h3>
     <hr>
-    <form class="row g-3">
+    <h4>Available Products:</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.ProductID }}</td>
+                <td>{{ product.Name_of_the_item }}</td>
+                <td>{{ product.Quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <form class="row g-3" method="post">
+        {% csrf_token %}
         <div class="col-12">
             <label for="productId" class="form-label">Product ID</label>
-            <input type="text" class="form-control" id="productId" placeholder="Product ID">
+            <input type="text" class="form-control" id="productId" name="productId" placeholder="Product ID">
         </div>
-        <div class="col-12">
-            <label for="productName" class="form-label">Name of the Item</label>
-            <input type="text" class="form-control" id="productName" placeholder="Item Name">
-        </div>
+        {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success mt-3">{{ success }}</div>
+        {% endif %}
         <div class="col-12">
             <button type="submit" class="btn btn-danger">Remove</button>
         </div>
+
     </form>
     <div class="go-back">
         <a href="#">Go Back</a>
