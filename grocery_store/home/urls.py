@@ -24,4 +24,7 @@ urlpatterns = [
     path('user_scroll_page', views.user_scroll_page, name ='user_scroll_page'),
     path('user_cart', views.user_cart, name ='user_cart'),
     path('user_checkout', views.user_checkout, name ='user_checkout'),
+    path('user_cart/<str:discounted_price>/', views.user_cart, name='user_cart'),
+    path('remove_from_cart_quantity/', views.remove_from_cart_quantity, name='remove_from_cart_quantity'),
+    path('apply-offer/', views.apply_offer, name='apply_offer')
 ]

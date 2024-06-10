@@ -63,7 +63,7 @@
 </head>
 <body>
     <div class="container">
-        <h3 class="title">Your Cart</h3> <!-- Updated title -->
+        <h3 class="title">Your Cart</h3>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <table class="table">
@@ -74,19 +74,34 @@
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Category</th>
-                            <th>Total Price</th> <!-- Total price for each product -->
+                            <th>Total Price</th>
+                            <th>Actions</th> <!-- New column for Remove button -->
                         </tr>
                     </thead>
                     <tbody>
+                        {% for item in cart_items %}
                         <tr>
-                            <td>Product 1</td>
-                            <td>XXX</td>
-                            <td>XX</td>
-                            <td>$XX.XX</td>
-                            <td>Category 1</td>
-                            <td>$XXX.XX</td> <!-- Total price for this product -->
+                            <td>{{ item.item.Name_of_the_item }}</td>
+                            <td>{{ item.item.ProductID }}</td>
+                            <td style="color: red;">{{ item.quantity }}</td> <!-- Quantity in red color -->
+                            <td>${{ item.item.Price }}</td>
+                            <td>{{ item.item.CategoryID.Category_Name }}</td>
+                            <td>${{ item.total_price }}</td>
+                            <td>
+                                <!-- Form to submit removal of item from cart -->
+                                <form action="{% url 'remove_from_cart_quantity' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <div class="form-group">
+                                        <label for="quantity">Quantity to Remove:</label>
+                                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1">
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
+                                
+                            </td>
                         </tr>
-                        <!-- Add more product rows here if needed -->
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -95,10 +110,11 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <form>
+                        <form action="{% url 'apply_offer' %}" method="POST">
+                            {% csrf_token %}
                             <div class="mb-3">
                                 <label for="offer" class="form-label">Add Offer</label>
-                                <input type="text" class="form-control" id="offer" placeholder="Enter offer code">
+                                <input type="text" class="form-control" name="offer" id="offer" placeholder="Enter offer code">
                             </div>
                             <button type="submit" class="btn btn-primary">Apply</button>
                         </form>
@@ -111,15 +127,19 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Cart Total</h5>
-                        <p class="card-text mb-2">Total Price: $XXX.XX</p> <!-- Total price for the whole cart -->
+                        <p class="card-text mb-2">Total Price: ${{ total_price }}</p>
+                        {% if discounted_price %}
+                        <p class="card-text mb-2">Discounted Price: ${{ discounted_price }}</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="text-center mb-4"> <!-- Added margin at the bottom -->
-            <a href="{%url 'user_scroll_page'%}" class="btn btn-primary me-2">Continue Shopping</a> <!-- Continue shopping button -->
-            <a href="{%url 'user_checkout'%}" class="btn btn-primary me-2">Go to Checkout</a> <!-- Go to checkout button -->
+        <div class="text-center mb-4">
+            <a href="{% url 'user_scroll_page' %}" class="btn btn-primary me-2">Continue Shopping</a>
+            <a href="{% url 'user_checkout' %}" class="btn btn-primary me-2">Go to Checkout</a>
         </div>
     </div>
+    
 </body>
 </html>

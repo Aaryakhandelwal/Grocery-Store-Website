@@ -81,38 +81,52 @@
     <div class="container">
         <h3>Checkout</h3>
         <h5 class="mb-3">Cart</h5>
-        <table>
-            <thead>
-                <tr>
-                    <th>Item ID</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Category</th>
-                    <th>Total Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>$20.00</td>
-                    <td>Category 1</td>
-                    <td>$40.00</td>
-                </tr>
-                <!-- Add more rows for each item in the cart -->
-            </tbody>
-        </table>
+        <!-- Iterate over cart items to display each item -->
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Item ID</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.item.Name_of_the_item }}</td>
+            <td>{{ item.item.ProductID }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.item.Price }}</td>
+            <td>{{ item.item.CategoryID.Category_Name }}</td>
+            <td>${{ total_price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Display total price -->
+    <div class="total-price">
+        <!-- Display total price and discounted price if available -->
+        <p>Total Price: ${{ total_price }}</p>
+        {% if discounted_price %}
+        <p>Discounted Price: ${{ discounted_price }}</p>
+        {% endif %}
+    </div>
+
+
         <hr>
-        <div class="total-price">
-            <p>Total Price: $120.00</p>
-            <p>Offers Applied: 10% Off</p>
-            <p>Final Price: $108.00</p>
-        </div>
+        
         <div class="divider"></div> <!-- Divider line -->
         <div class="delivery-address mb-3">
             <label for="deliveryAddress" class="form-label">Delivery Address:</label>
-            <p id="deliveryAddress">123 Main Street, City, State, Zip</p>
+            <p id="deliveryAddress">{{ customer_address }}</p>
         </div>
+        
+        
+        
         <div class="payment-method mb-3">
             <label for="paymentMethod" class="form-label">Payment Method:</label>
             <input type="text" id="paymentMethod" class="form-control" placeholder="Enter payment method">

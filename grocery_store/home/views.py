@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.db.utils import OperationalError
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-
-
-
+from django.db.models import F, ExpressionWrapper, FloatField
+from decimal import Decimal
+from .models import Offers
 def entry(request):
     return render(request, 'entry.html')
 
@@ -304,8 +304,155 @@ def user_scroll_page(request):
     return render(request, 'user_scroll_page.html', {'items': items})
 
 
-def user_cart(request):
-    return render(request, 'user_cart.html')
+from django.shortcuts import render, redirect, get_object_or_404
+from . import models
+
+from decimal import Decimal
+
+def user_cart(request, discounted_price=None):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user_login')  # Redirect to login if user is not authenticated
+
+    customer = get_object_or_404(models.Customer, pk=user_id)
+    cart = get_object_or_404(models.Cart, customer=customer)
+    cart_items = models.CartItem.objects.filter(cart=cart)
+
+    # Calculate total price for each item and update the cart_items queryset
+    for item in cart_items:
+        item.total_price = item.item.Price * item.quantity
+
+    # Calculate the total price for the entire cart
+    total_price = sum(item.total_price for item in cart_items)
+
+    # Check if discounted price is available and save it in session
+    if discounted_price is not None:
+        request.session['discounted_price'] = float(discounted_price)  # Convert Decimal to float
+    else:
+        # If discounted price is None, set it equal to total price
+        request.session['discounted_price'] = float(total_price)  # Convert Decimal to float
+
+    # Save the total price in session
+    request.session['total_price'] = float(total_price)  # Convert Decimal to float
+
+    return render(request, 'user_cart.html', {
+        'cart_items': cart_items,
+        'total_price': float(total_price),  # Convert Decimal to float
+        'discounted_price': float(request.session['discounted_price'])  # Convert Decimal to float
+    })
+
+
+def apply_offer(request):
+    if request.method == 'POST':
+        offer_code = request.POST.get('offer')
+        try:
+            # Retrieve the discount offer based on the offer code
+            discount_offer = Offers.objects.get(PromoCode=offer_code)
+            
+            # Calculate the total price of the user's cart
+            user_id = request.session.get('user_id')
+            if not user_id:
+                return redirect('user_login')  # Redirect to login if user is not authenticated
+            
+            customer = get_object_or_404(models.Customer, pk=user_id)
+            cart = get_object_or_404(models.Cart, customer=customer)
+            cart_items = models.CartItem.objects.filter(cart=cart)
+            total_price = sum(item.item.Price * item.quantity for item in cart_items)
+            
+            # Calculate the discount based on the offer's percentage
+            discount = (discount_offer.Percentage / 100) * float(total_price)
+
+            # Check if the discount exceeds the MinOrderValue
+            if discount > discount_offer.MinOrderValue:
+                # Apply the discount to get the discounted price
+                discounted_price = total_price - Decimal(discount)
+                # Round off the discounted price to two digits
+                discounted_price = round(discounted_price, 2)
+
+                # Redirect to the user_cart view function with the discounted price as a parameter
+                return redirect('user_cart', discounted_price=discounted_price)
+            else:
+                # If discount is less than or equal to MinOrderValue, do not apply the discount
+                messages.error(request, "Discount cannot be applied. Minimum order value not met.")
+        except Offers.DoesNotExist:
+            # Handle case where offer code is invalid
+            messages.error(request, "Invalid offer code.")
+    # Handle GET requests or invalid offers
+    return redirect('user_cart')
+
+
 
 def user_checkout(request):
-    return render(request, 'user_checkout.html')
+    # Retrieve the user's cart items
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user_login')  # Redirect to login if user is not authenticated
+    
+    customer = get_object_or_404(models.Customer, pk=user_id)
+    cart = get_object_or_404(models.Cart, customer=customer)
+    cart_items = models.CartItem.objects.filter(cart=cart)
+    
+    # Check if discounted price is available in session
+    discounted_price = request.session.get('discounted_price')
+    total_price = request.session.get('total_price')
+
+    if not discounted_price or not total_price:
+        # If discounted price or total price is not available in session, calculate them from the cart
+        total_price = sum(item.item.Price * item.quantity for item in cart_items)
+    
+    # Pass the cart items, total price, discounted price, and customer's address to the template
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'discounted_price': discounted_price,
+        'customer_address': customer.Delivery_Address  # Use the correct field name for the delivery address
+    }
+    
+    return render(request, 'user_checkout.html', context)
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
+from django.shortcuts import redirect
+from .models import CartItem
+
+def remove_from_cart_quantity(request):
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        quantity_to_remove_str = request.POST.get('quantity')
+        
+        if not item_id or not quantity_to_remove_str:
+            return HttpResponseBadRequest("Item ID or quantity parameter is missing.")
+        
+        try:
+            quantity_to_remove = int(quantity_to_remove_str)
+            if quantity_to_remove <= 0:
+                return HttpResponseBadRequest("Invalid quantity to remove. Quantity must be a positive integer.")
+        except ValueError:
+            return HttpResponseBadRequest("Invalid quantity to remove. Quantity must be a positive integer.")
+        
+        try:
+            cart_item = CartItem.objects.get(id=item_id)
+            current_quantity = cart_item.quantity
+            
+            if quantity_to_remove > current_quantity:
+                return HttpResponseBadRequest("Requested quantity exceeds quantity in the cart.")
+            
+            new_quantity = current_quantity - quantity_to_remove
+            
+            item = cart_item.item
+            item.Quantity += quantity_to_remove
+            item.save()
+            
+            if new_quantity == 0:
+                # If new quantity is zero or negative, remove item from cart
+                cart_item.delete()
+            else:
+                # Update item quantity in the cart
+                cart_item.quantity = new_quantity
+                cart_item.save()
+            
+            return redirect('user_cart')
+        
+        except CartItem.DoesNotExist:
+            return HttpResponseBadRequest("Cart item not found.")
+    
+    return HttpResponseBadRequest("Invalid request method.")

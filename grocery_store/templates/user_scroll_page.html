@@ -44,6 +44,10 @@
             font-size: 28px;
             text-align: center;
         }
+        .go-to-cart {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +80,9 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+        <div class="go-to-cart">
+            <a href="{% url 'user_cart' %}" class="btn btn-primary">Go to Cart</a>
         </div>
     </div>
 </body>
