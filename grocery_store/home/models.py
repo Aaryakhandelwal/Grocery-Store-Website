@@ -81,3 +81,28 @@ class Vendor(models.Model):
 
     class Meta:
         db_table = 'vendor'
+
+class Customer(models.Model):
+    customer_id = models.AutoField(primary_key=True)
+    Name_of_the_customer = models.CharField(max_length=50)
+    Delivery_Address = models.CharField(max_length=50)
+    Email_Address = models.EmailField(max_length=50, unique=True, null=True, blank=True)
+    password = models.CharField(max_length=50)
+    Phone_number = models.BigIntegerField()
+
+    class Meta:
+        db_table = 'customers'
+        
+class Cart(models.Model):
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'cart'
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = 'cart_item'

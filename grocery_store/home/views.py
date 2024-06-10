@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from home import models
 from django.contrib import messages
 from django.db.utils import OperationalError
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -49,9 +50,49 @@ def admin_register(request):
 
 
 def user_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            # Check if user credentials exist in the database
+            user = models.Customer.objects.get(Email_Address=email, password=password)
+            # If user is found, store user ID in session and redirect to user main page or dashboard
+            request.session['user_id'] = user.customer_id
+            return redirect('user_scroll_page')
+        except models.Customer.DoesNotExist:
+            # If user is not found, render the login page with an error message
+            return render(request, 'user_login.html', {'error': 'Invalid credentials. Please try again.'})
+
     return render(request, 'user_login.html')
 
+
 def user_register(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        phone = request.POST.get('phone')
+        
+
+        if models.Customer.objects.filter(Email_Address=email).exists():
+            return render(request, 'user_register.html', {'error': 'User already exists. Try a different one!'})
+
+        try:
+             # Hash the password
+            customer = models.Customer.objects.create(
+                Name_of_the_customer=name,
+                Delivery_Address=address,
+                Email_Address=email,
+                password=password,  # Hashed password
+                Phone_number=phone
+            )
+            customer.save()
+            return redirect('user_login')
+        
+        except Exception as e:
+            print(f"Error: {e}")
+            return render(request, 'user_register.html', {'error': 'Database error. Please try again.'})
     return render(request, 'user_register.html')
 
 
@@ -61,7 +102,7 @@ def seller_login(request):
         # Check if a vendor with the provided phone number exists
         try:
             vendor = models.Vendor.objects.get(PhoneNumber=phone_number)
-            return redirect('seller_main_page')
+            return redirect('seller_add_product')
         except models.Vendor.DoesNotExist:
             # If vendor does not exist, show login failure message or redirect to login page again
             return render(request, 'seller_login.html', {'error':"Seller with this phone number does not exist. Please ask the admin."})
@@ -227,8 +268,41 @@ def seller_remove_product(request):
     return render(request, 'seller_remove_product.html', {'products': products})
 
 
+from django.db import transaction
+
+@transaction.atomic
 def user_scroll_page(request):
-    return render(request, 'user_scroll_page.html')
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user_login')  # Redirect to login if user is not authenticated
+    
+    items = models.Item.objects.all()
+
+    if request.method == "POST":
+        item_id = request.POST.get('item_id')
+        quantity = int(request.POST.get('quantity', 1))
+        item = get_object_or_404(models.Item, ProductID=item_id)
+        
+        customer = get_object_or_404(models.Customer, pk=user_id)
+        cart, created = models.Cart.objects.get_or_create(customer=customer)
+        cart_item, created = models.CartItem.objects.get_or_create(cart=cart, item=item)
+        
+        if not created:
+            cart_item.quantity += quantity
+        else:
+            cart_item.quantity = quantity
+        cart_item.save()
+        
+        # Update the quantity of the item in the main database
+        item.Quantity -= quantity
+        if (item.Quantity <= 0):
+            item.delete()            
+        else:
+            item.save() 
+        return redirect('user_scroll_page')
+
+    return render(request, 'user_scroll_page.html', {'items': items})
+
 
 def user_cart(request):
     return render(request, 'user_cart.html')

@@ -63,19 +63,26 @@
     <div class="container">
         <h3>Enter User Details</h3>
         <hr>
-        <form class="row g-3">
+        <form method="post" class="row g-3">
+            {% csrf_token %}
             <div class="col-12">
-                <label for="inputEmail4" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Email" required>
             </div>
             <div class="col-12">
-                <label for="inputPassword4" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                <label for="inputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password" required>
             </div>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
             <div class="col-12">
-                <button type="submit" class="btn btn-primary" onclick="window.location.href='{% url 'user_scroll_page' %}'">Enter</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </div>
         </form>
+        
         <div class="go-back">
             <a href="{%url 'entry'%}">Go Back</a>
         </div>
