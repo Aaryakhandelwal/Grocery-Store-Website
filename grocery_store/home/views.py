@@ -381,7 +381,7 @@ def apply_offer(request):
     return redirect('user_cart')
 
 
-
+@transaction.atomic
 def user_checkout(request):
     # Retrieve the user's cart items
     user_id = request.session.get('user_id')
@@ -414,6 +414,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from .models import CartItem
 
+@transaction.atomic
 def remove_from_cart_quantity(request):
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
